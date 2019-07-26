@@ -19,7 +19,7 @@ module.exports = function (grunt) {
 		function normalizePaths(output) {
 			var result = output.replace(zicBaseRegex, '');
 			if (path.sep !== '/') {
-				result = result.replace(pathSepRegex, '/')
+				result = result.replace(pathSepRegex, '/');
 			}
 			return result;
 		}

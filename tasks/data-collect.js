@@ -5,10 +5,11 @@ var path = require('path'),
 	populations = require('./population.json');
 
 module.exports = function (grunt) {
-	grunt.registerTask('data-collect', '4. Collect all data from zdump(8) into a single json file.', function (version) {
+	grunt.registerTask('data-collect', '5. Collect all data from zdump(8) into a single json file.', function (version) {
 		version = version || 'latest';
 
 		var files = grunt.file.expand({ filter : 'isFile', cwd : 'temp/zdump/' + version }, '**/*.zdump'),
+			meta  = grunt.file.readJSON('data/meta/' + version + '.json'),
 			data  = [];
 
 		var format = "MMM D HH:mm:ss YYYY";
@@ -18,7 +19,8 @@ module.exports = function (grunt) {
 				name    = file.replace(/\.zdump$/, ''),
 				abbrs   = [],
 				untils  = [],
-				offsets = [];
+				offsets = [],
+				countries = [];
 
 			lines.forEach(function (line) {
 				var parts  = line.split(/\s+/),
@@ -50,7 +52,8 @@ module.exports = function (grunt) {
 				abbrs      : abbrs,
 				untils     : untils,
 				offsets    : offsets,
-				population : populations[name] | 0
+				population : populations[name] | 0,
+				countries  : (meta.zones[name] && meta.zones[name].countries) ? meta.zones[name].countries : countries
 			});
 		});
 
