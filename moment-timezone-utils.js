@@ -129,6 +129,14 @@
 		return '|' + precision + 'e' + exponent;
 	}
 
+	function packCountries (countries) {
+		if (!countries) {
+			return '';
+		}
+
+		return countries.join(' ');
+	}
+
 	function validatePackData (source) {
 		if (!source.name)    { throw new Error("Missing name"); }
 		if (!source.abbrs)   { throw new Error("Missing abbrs"); }
@@ -147,10 +155,17 @@
 		return [
 			source.name,
 			packAbbrsAndOffsets(source),
-			packUntils(source.untils) + packPopulation(source.population)
+			packUntils(source.untils) + packPopulation(source.population),
+			packCountries(source.countries)
 		].join('|');
 	}
 
+	function packCountry (source) {
+		return [
+			source.name,
+			source.zones.join(' '),
+		].join('|');
+	}
 	/************************************
 		Create Links
 	************************************/
@@ -219,9 +234,9 @@
 		findAndCreateLinks(source.zones, zones, links, groupLeaders);
 
 		return {
-			version : source.version,
-			zones   : zones,
-			links   : links.sort()
+			version   : source.version,
+			zones     : zones,
+			links     : links.sort()
 		};
 	}
 
@@ -273,7 +288,8 @@
 			abbrs      : slice.apply(source.abbrs, indices),
 			untils     : untils,
 			offsets    : slice.apply(source.offsets, indices),
-			population : source.population
+			population : source.population,
+			countries  : source.countries
 		};
 	}
 
@@ -313,6 +329,7 @@
 	moment.tz.createLinks    = createLinks;
 	moment.tz.filterYears    = filterYears;
 	moment.tz.filterLinkPack = filterLinkPack;
+	moment.tz.packCountry    = packCountry;
 
 	return moment;
 }));
